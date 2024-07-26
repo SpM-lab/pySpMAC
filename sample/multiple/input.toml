@@ -1,0 +1,22 @@
+output = "output"
+num_flavor = 2
+
+beta = 100
+filein_G = "Gtau.in"
+column = 1
+
+num_omega = 1001
+min_omega = -2
+max_omega = 4
+
+max_iteration = 1000
+
+min_sv = 1e-12
+
+optimize = false
+max_loglambda = 0
+min_loglambda = -10
+loglambda = -5
+
+sumrule = true
+nonnegative = true

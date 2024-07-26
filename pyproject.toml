@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "pySpMAC"
+version = "0.1"
+description = "spmac"
+authors = ["Yuichi Motoyama <y-motoyama@issp.u-tokyo.ac.jp>"]
+license = "MPL-2.0"
+
+readme = "README.md"
+repository = "https://github.com/SpM-lab/pySpMAC"
+
+packages = [
+  { include = "spmac", from = "src" }
+  ]
+
+[tool.poetry.dependencies]
+python = ">=3.8"
+numpy = "^1.21.4"
+admmsolver = "^0.7.7"
+toml = "^0.10.2"
+sparse-ir = {extras = ["xprec"], version = "^0.92.0"}
+
+
+[tool.poetry.dev-dependencies]
+black = "^22.1.0"
+pynvim = "^0.4.3"
+pytest = "^7.1.1"
+types-toml = "^0.10.5"
+jupyter = "^1.0.0"
+matplotlib = "^3.5.2"
+
+[tool.poetry.scripts]
+spmac = "spmac.main:main"
+
+[tool.mypy]
+files = "src"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
