@@ -67,6 +67,15 @@ python3 -m pytest
 - Yuichi Motoyama
 - Hiroshi Shinaoka
 
+## Paper
+
+- Sparse Modeling Analytic Continuation
+    - Junya Otsuki, Masayuki Ohzeki, Hiroshi Shinaoka, and Kazuyoshi Yoshimi, "Sparse modeling approach to analytical continuation of imaginary-time quantum Monte Carlo data", [Phys. Rev. E 95, 061302(R)](https://journals.aps.org/pre/abstract/10.1103/PhysRevE.95.061302).
+- SpM AC + Pade approximation
+    - Yuichi Motoyama, Kazuyoshi Yoshimi, and Junya Otsuki, "Robust analytic continuation combining the advantages of the sparse modeling approach and the Padé approximation", [Phys. Rev. B 105, 035139](https://journals.aps.org/prb/abstract/10.1103/PhysRevB.105.035139).
+- SpM AC for multi-orbital data
+    - Yuichi Motoyama, Hiroshi Shinaoka, Junya Otsuki, and Kazuyoshi Yoshimi, "Robust analytic continuation using sparse modeling approach imposed by semi-positive definiteness for multi-orbital systems", [arXiv:2409.01509](https://arxiv.org/abs/2409.01509).
+
 ## License
 
 PySpMAC is distributed under the Mozilla Public License 2.0
