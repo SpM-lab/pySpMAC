@@ -242,9 +242,11 @@ class Solver(SolverBase):
         r_l = rho_l.reshape((-1, self.nflavor, self.nflavor))
         if self.use_sparse_ir:
             sampler = sparse_ir.TauSampling(self.basis, self.ts[idx])
-            ret = np.zeros((len(idx), self.nflavor, self.nflavor))
+            # Keep the dtype of rho_l: complex off-diagonal G_ab(tau) must not be
+            # truncated to its real part (needed for complex-Hermitian / SOC data).
+            ret = np.zeros((len(idx), self.nflavor, self.nflavor), dtype=r_l.dtype)
             for i, j in itertools.product(range(self.nflavor), repeat=2):
-                ret[:, i, j] = np.real(sampler.evaluate(self.basis.s * r_l[:, i, j]))
+                ret[:, i, j] = sampler.evaluate(self.basis.s * r_l[:, i, j])
             return ret
         else:
             return np.einsum("lab, l, li -> iab", r_l, self.s, self.u[:,idx])
@@ -277,7 +279,8 @@ class Solver(SolverBase):
                     f.write(str(ts[i]))
                     for gt in Gts:
                         y = gt[i, ifl, jfl]
-                        f.write(f" {np.real(y)}")
+                        # real then imaginary part (imag is 0 for real data)
+                        f.write(f" {np.real(y)} {np.imag(y)}")
                     f.write("\n")
 
     def write_rhol(
@@ -304,7 +307,7 @@ class Solver(SolverBase):
                 if loglambda is not None:
                     f.write(f"# log_lambda = {loglambda}\n")
                 for i, r in enumerate(r_l[:, ifl, jfl]):
-                    f.write(f"{i} {np.real(r)}\n")
+                    f.write(f"{i} {np.real(r)} {np.imag(r)}\n")
 
     def write_rho(
         self,
