@@ -1,31 +1,46 @@
-[tool.poetry]
+[project]
 name = "pySpMAC"
 version = "0.1"
 description = "spmac"
-authors = ["Yuichi Motoyama <y-motoyama@issp.u-tokyo.ac.jp>"]
-license = "MPL-2.0"
-
+authors = [{ name = "Yuichi Motoyama", email = "y-motoyama@issp.u-tokyo.ac.jp" }]
+requires-python = ">=3.8"
 readme = "README.md"
-repository = "https://github.com/SpM-lab/pySpMAC"
+license = "MPL-2.0"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+    "numpy>=1.21.4,<2",
+    "admmsolver>=0.7.7,<0.8",
+    "toml>=0.10.2,<0.11",
+    "sparse-ir[xprec]>=0.92.0,<0.93",
+]
 
-packages = [
-  { include = "spmac", from = "src" }
-  ]
+[project.urls]
+Repository = "https://github.com/SpM-lab/pySpMAC"
 
-[tool.poetry.dependencies]
-python = ">=3.8"
-numpy = "^1.21.4"
-admmsolver = "^0.7.7"
-toml = "^0.10.2"
-sparse-ir = {extras = ["xprec"], version = "^0.92.0"}
-
-
-[tool.poetry.scripts]
+[project.scripts]
 spmac = "spmac.main:main"
+
+[tool.hatch.build.targets.sdist]
+include = ["src/spmac"]
+
+[tool.hatch.build.targets.wheel]
+include = ["src/spmac"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src/spmac" = "spmac"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.mypy]
 files = "src"
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
