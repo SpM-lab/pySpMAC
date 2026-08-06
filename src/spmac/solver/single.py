@@ -232,17 +232,19 @@ class Solver(SolverBase):
             print("  Not converged")
         return opt
 
-    def predict_rho(self, rho_l: NDArray[np.float64]) -> NDArray[np.float64]:
+    def predict_rho(self, rho_l) -> NDArray:
+        # Keep the dtype of rho_l so complex spectra are not truncated to real.
         if self.use_sparse_ir:
             return rho_l @ self.basis.v(self.ws)
         else:
             return rho_l @ self.v
 
-    def predict_Gtau(self, rho_l: NDArray[np.float64], idx=None) -> NDArray[np.float64]:
+    def predict_Gtau(self, rho_l, idx=None) -> NDArray:
         if idx is None:
             idx = np.arange(self.ntau)
         if self.use_sparse_ir:
             sampler = sparse_ir.TauSampling(self.basis, self.ts[idx])
+            # Keep the dtype of rho_l so complex G(tau) is not truncated to real.
             return sampler.evaluate(self.basis.s * rho_l)
         else:
             return rho_l @ self.u[:, idx]
@@ -268,7 +270,8 @@ class Solver(SolverBase):
                 f.write(str(ts[i]))
                 for gt in Gts:
                     y = gt[i]
-                    f.write(f" {np.real(y)}")
+                    # real then imaginary part (imag is 0 for real data)
+                    f.write(f" {np.real(y)} {np.imag(y)}")
                 f.write("\n")
 
     def write_rhol(
@@ -292,7 +295,7 @@ class Solver(SolverBase):
             if loglambda is not None:
                 f.write(f"# log_lambda = {loglambda}\n")
             for i, r in enumerate(rs):
-                f.write(f"{i} {np.real(r)}\n")
+                f.write(f"{i} {np.real(r)} {np.imag(r)}\n")
 
     def write_rho(
         self,
@@ -321,5 +324,5 @@ class Solver(SolverBase):
             if loglambda is not None:
                 f.write(f"# log_lambda = {loglambda}\n")
             for w, r in zip(ws, rs):
-                f.write(f"{w} {np.real(r)/dw}\n")
-                # f.write(f"{w} {np.real(r)}\n")
+                # real then imaginary part (imag is 0 for real data)
+                f.write(f"{w} {np.real(r)/dw} {np.imag(r)/dw}\n")

@@ -49,9 +49,24 @@ def optimize(
     return loglambdas[i]
 
 
+def _load_gtau_from_file(
+    filename: str, column: int, column_imag: Optional[int] = None
+) -> NDArray:
+    """Load G(τ) from a text file.
+
+    If ``column_imag`` is given, return complex G = Re + i Im.
+    Otherwise return the real column only (imaginary part is treated as 0).
+    """
+    data = np.loadtxt(filename)
+    g = data[:, column]
+    if column_imag is not None:
+        g = g + 1j * data[:, column_imag]
+    return g
+
+
 def run(
-    params: Dict[str, Any], Gtau: NDArray[np.float64]
-) -> Tuple[SolverBase, NDArray[np.float64], float]:
+    params: Dict[str, Any], Gtau: NDArray
+) -> Tuple[SolverBase, NDArray, float]:
     params = dict_with_lowerkey(params)
     verbose = params.get("verbose", True)
     n_trials = params.get("num_trials", 10)
@@ -103,18 +118,21 @@ def main():
 
     nflavor = params.get("num_flavor", 1)
     column: int = params["column"]
+    column_imag: Optional[int] = params.get("column_imag")
+    print(f"column: {column}, column_imag: {column_imag}")
     if nflavor == 1:
-        Gtau = np.loadtxt(params["filein_g"])[:, column]
+        Gtau = _load_gtau_from_file(params["filein_g"], column, column_imag)
     else:
-        Gtau = np.zeros((1, nflavor, nflavor))
+        dtype = np.complex128 if column_imag is not None else np.float64
+        Gtau = np.zeros((1, nflavor, nflavor), dtype=dtype)
         ntau = -1
         for i in range(nflavor):
             for j in range(nflavor):
                 filename = params["filein_g"] + f".{i}_{j}"
-                Gt = np.loadtxt(filename)[:, column]
+                Gt = _load_gtau_from_file(filename, column, column_imag)
                 if ntau < 0:
                     ntau = len(Gt)
-                    Gtau = np.zeros((ntau, nflavor, nflavor))
+                    Gtau = np.zeros((ntau, nflavor, nflavor), dtype=dtype)
                 Gtau[:, i, j] = Gt[:]
 
     solver, rho_l, best_loglambda = run(params, Gtau)

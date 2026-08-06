@@ -44,3 +44,6 @@ build-backend = "hatchling.build"
 
 [tool.mypy]
 files = "src"
+
+[tool.uv.sources]
+admmsolver = { git = "https://github.com/SpM-lab/admmsolver", branch = "complex-hermitian-support" }
