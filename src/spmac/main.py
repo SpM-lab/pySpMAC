@@ -121,9 +121,9 @@ def main():
     column_imag: Optional[int] = params.get("column_imag")
 
     if column_imag is None:
-        print(f"Loading real G_ij(τ) from {params["filein_g"]}.i_j column {column}")
+        print(f"Loading real G_ij(τ) from {params['filein_g']}.i_j column {column}")
     else:
-        print(f"Loading complex G_ij(τ) from {params["filein_g"]}.i_j column {column} and {column_imag}")
+        print(f"Loading complex G_ij(τ) from {params['filein_g']}.i_j column {column} and {column_imag}")
 
     if nflavor == 1:
         Gtau = _load_gtau_from_file(params["filein_g"], column, column_imag)
