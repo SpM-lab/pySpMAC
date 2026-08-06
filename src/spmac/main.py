@@ -57,10 +57,6 @@ def _load_gtau_from_file(
     If ``column_imag`` is given, return complex G = Re + i Im.
     Otherwise return the real column only (imaginary part is treated as 0).
     """
-    if column_imag is None:
-        print(f"Loading real G(τ) from {filename} column {column}")
-    else:
-        print(f"Loading complex G(τ) from {filename} column {column} and {column_imag}")
     data = np.loadtxt(filename)
     g = data[:, column]
     if column_imag is not None:
@@ -123,6 +119,11 @@ def main():
     nflavor = params.get("num_flavor", 1)
     column: int = params["column"]
     column_imag: Optional[int] = params.get("column_imag")
+
+    if column_imag is None:
+        print(f"Loading real G_ij(τ) from {params["filein_g"]}.i_j column {column}")
+    else:
+        print(f"Loading complex G_ij(τ) from {params["filein_g"]}.i_j column {column} and {column_imag}")
 
     if nflavor == 1:
         Gtau = _load_gtau_from_file(params["filein_g"], column, column_imag)
