@@ -25,7 +25,10 @@ The names of parameters are case-insensitive.
     - Filename storing G(τ)
     - When `num_flavor > 1`, "{filein_g}.{a}_{b}" are read for G_{ab}, where a,b = 0,1,...,num_flavor-1
 - column: int
-    - Index of column storing G(τ) (0-origin)
+    - Index of column storing Re G(τ) (0-origin)
+- column_imag: int (optional)
+    - Index of column storing Im G(τ) (0-origin)
+    - If omitted, Im G(τ) is treated as 0 (real input, backward compatible)
 - beta: float
     - Inverse temperature β
 - max_omega: float

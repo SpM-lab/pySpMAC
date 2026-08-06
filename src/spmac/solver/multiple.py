@@ -229,8 +229,10 @@ class Solver(SolverBase):
             print("  Not converged")
         return opt
 
-    def predict_rho(self, rho_l) -> NDArray[np.float64]:
-        r_l = rho_l.reshape((-1, self.nflavor, self.nflavor))
+    def predict_rho(self, rho_l) -> NDArray:
+        r_l = np.asarray(rho_l).reshape((-1, self.nflavor, self.nflavor))
+        # Keep the dtype of rho_l: complex off-diagonal rho_ab(omega) must not be
+        # truncated to its real part (needed for complex-Hermitian / SOC data).
         if self.use_sparse_ir:
             return np.einsum("lab,lw->wab", r_l, self.basis.v(self.ws))
         else:
@@ -338,4 +340,5 @@ class Solver(SolverBase):
                 if loglambda is not None:
                     f.write(f"# log_lambda = {loglambda}\n")
                 for w, r in zip(ws, rs[:, ifl, jfl]):
-                    f.write(f"{w} {np.real(r)/dw}\n")
+                    # real then imaginary part (imag is 0 for real data)
+                    f.write(f"{w} {np.real(r)/dw} {np.imag(r)/dw}\n")
