@@ -331,14 +331,30 @@ class Solver(SolverBase):
             dw = ws[1] - ws[0]
         else:
             dw = 1.0
-        for (
-            ifl,
-            jfl,
-        ) in itertools.product(range(nflavor), repeat=2):
-            specfile = outdir / (filename + f".{ifl}_{jfl}")
-            with open(specfile, "w") as f:
-                if loglambda is not None:
-                    f.write(f"# log_lambda = {loglambda}\n")
-                for w, r in zip(ws, rs[:, ifl, jfl]):
-                    # real then imaginary part (imag is 0 for real data)
-                    f.write(f"{w} {np.real(r)/dw} {np.imag(r)/dw}\n")
+
+        for spd in [True, False]:
+            if spd:
+                basename = "spd_" + filename
+                rs_out = np.zeros((len(ws), nflavor, nflavor), dtype=rs.dtype)
+                nw = len(ws)
+                for iw in range(nw):
+                    H2 = 0.5 * (rs[iw, :, :] + rs[iw, :, :].conj().T)
+                    ev, V = np.linalg.eigh(H2)
+                    ev = np.clip(ev, 0, None)
+                    rs_out[iw, :, :] = (V * ev) @ V.conj().T
+            else:
+                basename = filename
+                rs_out = rs
+
+            for (
+                ifl,
+                jfl,
+            ) in itertools.product(range(nflavor), repeat=2):
+                specfile = outdir / (basename + f".{ifl}_{jfl}")
+                with open(specfile, "w") as f:
+                    if loglambda is not None:
+                        f.write(f"# log_lambda = {loglambda}\n")
+                    for w, r in zip(ws, rs_out[:, ifl, jfl]):
+                        # real then imaginary part (imag is 0 for real data)
+                        f.write(f"{w} {np.real(r)/dw} {np.imag(r)/dw}\n")
+
